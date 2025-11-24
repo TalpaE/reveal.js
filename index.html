@@ -57,20 +57,20 @@
       </section>
 
       <section>
-      <section>
-        <h3>Theoretical Background</h3>
-        <ul class="fragmented-lists">
-          <li>subsystem TDDFT gradients</li>
-          <li>framework for embedded geometry optimizations</li>
-        </ul>
-        <!-- \[\begin{aligned} \dot{x} &amp; = \sigma(y-x) \\ \dot{y} &amp; = \rho x - y -
+        <section>
+          <h3>Theoretical Background</h3>
+          <ul class="fragmented-lists">
+            <li>subsystem TDDFT gradients</li>
+            <li>framework for embedded geometry optimizations</li>
+          </ul>
+          <!-- \[\begin{aligned} \dot{x} &amp; = \sigma(y-x) \\ \dot{y} &amp; = \rho x - y -
 					xz \\ \dot{z} &amp; = -\beta z + xy \\
 					&amp; \cdot\end{aligned} \\
 					 \] -->
-      </section>
+        </section>
 
         <section>
-          <h2>Subsystem TDDFT Gradients</h2>
+          <h3>Subsystem TDDFT Gradients</h3>
         </section>
         <section>
           <span class="math-small" style="--size:1.0em">
@@ -100,12 +100,29 @@
             highlight-red}{F_{ia}} - \sum_{pq, p \leq q} W_{pq} \left(S_{pq} - \delta_{pq} \right) \end{aligned} \]
           </span>
           <span class="math-small fragment" data-fragment-index="1" style="--size:0.9em">
-            \[ \begin{aligned} L^\xi &= \sum_{\mu\nu} \left[ h_{\mu\nu}^\xi + v_{\mu\nu}^{\mathrm{xc}(\xi)} + \htmlClass{fragment highlight-red}{v_{\mu\nu}^{\mathrm{emb}(\xi)}} \right] P_{\mu\nu} + \sum_{\mu\nu\kappa\lambda} (\mu\nu|\kappa\lambda)^\xi \Gamma_{\mu\nu\kappa\lambda} - \sum_{\mu\nu} S_{\mu\nu}^\xi W_{\mu\nu} \\
-            & \hphantom{=} + \sum_{\mu\nu\kappa\lambda} (X+Y)_{\mu\nu} (X+Y)_{\kappa\lambda} \htmlData{fragment-index="2"}{\htmlClass{fragment highlight-red}{f_{\mu\nu\kappa\lambda}^{\mathrm{combxc}(\xi)}}} \end{aligned} \]
+            \[ \begin{aligned} L^\xi &= \sum_{\mu\nu} \left[ h_{\mu\nu}^\xi + v_{\mu\nu}^{\mathrm{xc}(\xi)} +
+            \htmlClass{fragment highlight-red}{v_{\mu\nu}^{\mathrm{emb}(\xi)}} \right] P_{\mu\nu} +
+            \sum_{\mu\nu\kappa\lambda} (\mu\nu|\kappa\lambda)^\xi \Gamma_{\mu\nu\kappa\lambda} - \sum_{\mu\nu}
+            S_{\mu\nu}^\xi W_{\mu\nu} \\
+            & \hphantom{=} + \sum_{\mu\nu\kappa\lambda} (X+Y)_{\mu\nu} (X+Y)_{\kappa\lambda}
+            \htmlData{fragment-index="2"}{\htmlClass{fragment
+            highlight-red}{f_{\mu\nu\kappa\lambda}^{\mathrm{combxc}(\xi)}}} \end{aligned} \]
           </span>
           <span class="fragment" data-fragment-index="5">
-            $ v_{\mu\nu}^{\mathrm{emb}(\xi)}$ contains combined xc terms (potential and kernel) and inter-subsystem electrostatic interactions
+            $ v_{\mu\nu}^{\mathrm{emb}(\xi)}$ contains combined xc terms (potential and kernel) and inter-subsystem
+            electrostatic interactions
           </span>
+        </section>
+        <section data-auto-animate>
+          <h3>Embedded Geometry Optimizations</h3>
+        </section>
+        <section data-auto-animate>
+          <h3>Embedded Geometry Optimizations</h3>
+          <ul>
+            <li>additional distinction: geometrically "active" and "passive" </li>
+            <li class="fragment">uncoupled frozen-density embedding (FDEu) approximation for total system?</li>
+            <li class="fragment">otherwise: state-specific embedding possible</li>
+          </ul>
         </section>
       </section>
       <section>
