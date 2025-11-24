@@ -8,16 +8,73 @@
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+		<link rel="stylesheet" href="dist/theme/white.css"> <!-- perhaps also simple -->
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<style !important>
+		.katex-scale { display:inline-block; transform-origin: left; transform: scale(0.5); vertical-align: bottom; line-height: 1; }
+		.katex-centered { text-align: left;}
+		.size-small { font-size: 0.8em; }
+		.reveal .katex 
+		.reveal .katex-display {font-size: 0.5em;}
+		</style>
 	</head>
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section><h6>Embedded Excited-State Geometry Optimizations</h6>
+				<br>
+					Anton Rikus<br><br>
+					26.11.2025
+				</section>
+				<section><h2>Strengths</h2>
+					<ul class="fragmented-lists">
+						<li>computational savings</li>
+						<li>simpler targeting of local excited states</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Theoretical Background</h3>
+					<ul class="fragmented-lists">
+						<li>subsystem TDDFT gradients</li>
+						<li>framework for embedded geometry optimizations</li>
+					</ul>
+					<!-- \[\begin{aligned} \dot{x} &amp; = \sigma(y-x) \\ \dot{y} &amp; = \rho x - y -
+					xz \\ \dot{z} &amp; = -\beta z + xy \\
+					&amp; \cdot\end{aligned} \\
+					 \] -->
+				</section>
+				<section>
+					<section>
+					<h2>Subsystem TDDFT</h2>
+				  </section>
+					<section data-auto-animate>
+					 \[ G[X, Y, \omega] = [X^\mathrm{T} \; Y^\mathrm{T}] \begin{bmatrix} A & B \\ B & A \end{bmatrix} \begin{bmatrix} X \\ Y \end{bmatrix} \]
+					<p class="fragment"> <span class="katex-scale" data-id="equation"> \[ \begin{aligned} A_{ia,jb} &= F_{ab} \delta_{ji} - F_{ij} \delta_{ab} + (ia|jb) + (ia|f^\mathrm{xc}|jb) \htmlClass{fragment highlight-red}{+ (ia|f^\mathrm{naddxc}|jb) + (ia|f^\mathrm{naddkin}|jb)} \\
+						B_{ia,jb} &= (ia|bj) + (ia|f^\mathrm{xc}|bj) \htmlClass{fragment highlight-red}{+ (ia|f^\mathrm{naddxc}|bj) + (ia|f^\mathrm{naddkin}|bj)} \end{aligned}	\] </span> </p>
+					</section>
+					<section data-auto-animate>
+						<span class="katex-scale" data-id="equation"> \[ \small\begin{aligned} A_{ia,jb} &= F_{ab} \delta_{ji} - F_{ij} \delta_{ab} + (ia|jb) + \red{(ia|f^\mathrm{combined xc}|jb)}  \\
+							B_{ia,jb} &= (ia|bj) + \red{(ia|f^\mathrm{combined xc}|bj)} \end{aligned}	\] </span>
+					</section>
+				</section>
+				<section>
+					<h4>S$_1$ optimization with water geometry frozen (IRed, RFO) </h4>
+					<video controls loop data-src="media/emb.mp4" data-preview-video data-preview-fit="contain"></video>
+				</section>
+				<section>
+					<h4>S$_1$ optimization with water geometry allowed to relax (IRed, RFO) </h4>
+					<video id="emb_act-vid" controls loop preload="metadata" data-src="media/emb_act.mp4" data-preview-video data-preview-fit="contain"></video>
+					<script>
+						const v = document.getElementById('emb_act-vid');
+						// 0.5 = half speed, 1 = normal, 2 = double speed
+						v.addEventListener('loadedmetadata', () => {
+							v.playbackRate = 0.25;
+						});
+					</script>
+				</section>
+
 			</div>
 		</div>
 
@@ -25,16 +82,27 @@
 		<script src="plugin/notes/notes.js"></script>
 		<script src="plugin/markdown/markdown.js"></script>
 		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
 		<script>
 			// More info about initialization & config:
 			// - https://revealjs.com/initialization/
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
+				slideNumber: true,
+				katex : {
+					trust: true,
+				},
 
 				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
 			});
 		</script>
+		<script>
+		Reveal.addEventListener("ready", function addFragmentToLists() {
+			for (const listItem of document.querySelectorAll(".fragmented-lists li")) {
+				listItem.classList.add("fragment");
+			}
+		});</script>
 	</body>
 </html>
