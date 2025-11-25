@@ -2,177 +2,214 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <title>reveal.js</title>
+	<title>reveal.js</title>
 
-  <link rel="stylesheet" href="dist/reset.css">
-  <link rel="stylesheet" href="dist/reveal.css">
-  <link rel="stylesheet" href="dist/theme/white.css"> <!-- perhaps also simple -->
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/white.css"> <!-- perhaps also simple -->
 
-  <!-- Theme used for syntax highlighted code -->
-  <link rel="stylesheet" href="plugin/highlight/monokai.css">
-  <style !important>
-    /* .katex-scale { display:inline-block; transform-origin: left; transform: scale(0.5); vertical-align: bottom; line-height: 1; } */
-    .katex-centered {
-      text-align: left;
-    }
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	<style !important>
+		/* .katex-scale { display:inline-block; transform-origin: left; transform: scale(0.5); vertical-align: bottom; line-height: 1; } */
+		.katex-centered {
+			text-align: left;
+		}
 
-    .math-small .katex,
-    .math-small .katex-display {
-      font-size: var(--size, 1);
-    }
+		.math-small .katex,
+		.math-small .katex-display {
+			font-size: var(--size, 1);
+		}
 
-    .reveal .katex .reveal .katex-display {
-      font-size: 0.5em;
-    }
+		.reveal .katex .reveal .katex-display {
+			font-size: 0.5em;
+		}
 
-    .katex-wrap {
-      display: inline-block;
-      transform-origin: center center;
-      transform: scale(var(--kscale, 1));
-      will-change: transform, opacity;
-      /* hint for smoother GPU animation */
-      text-align: center;
-    }
-  </style>
+		.katex-wrap {
+			display: inline-block;
+			transform-origin: center center;
+			transform: scale(var(--kscale, 1));
+			will-change: transform, opacity;
+			/* hint for smoother GPU animation */
+			text-align: center;
+		}
+	</style>
 </head>
 
 <body>
-  <div class="reveal">
-    <div class="slides">
-      <section>
-        <h6>Embedded Excited-State Geometry Optimizations</h6>
-        <br>
-        Anton Rikus<br><br>
-        26.11.2025
-      </section>
-      <section>
-        <h2>Strengths</h2>
-        <ul class="fragmented-lists">
-          <li>computational savings</li>
-          <li>simpler targeting of local excited states</li>
-        </ul>
-      </section>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h6>Embedded Excited-State Geometry Optimizations</h6>
+				<br>
+				Anton Rikus<br><br>
+				26.11.2025
+			</section>
+			<section>
+				<h2>Strengths</h2>
+				<ul class="fragmented-lists">
+					<li>computational savings</li>
+					<li>simpler targeting of local excited states</li>
+				</ul>
+			</section>
 
-      <section>
-        <section>
-          <h3>Theoretical Background</h3>
-          <ul class="fragmented-lists">
-            <li>subsystem TDDFT gradients</li>
-            <li>framework for embedded geometry optimizations</li>
-          </ul>
-          <!-- \[\begin{aligned} \dot{x} &amp; = \sigma(y-x) \\ \dot{y} &amp; = \rho x - y -
+			<section>
+				<section>
+					<h3>Theoretical Background</h3>
+					<ul class="fragmented-lists">
+						<li>subsystem TDDFT gradients</li>
+						<li>framework for embedded geometry optimizations</li>
+					</ul>
+					<!-- \[\begin{aligned} \dot{x} &amp; = \sigma(y-x) \\ \dot{y} &amp; = \rho x - y -
 					xz \\ \dot{z} &amp; = -\beta z + xy \\
 					&amp; \cdot\end{aligned} \\
 					 \] -->
-        </section>
+				</section>
 
-        <section>
-          <h3>Subsystem TDDFT Gradients</h3>
-        </section>
-        <section>
-          <span class="math-small" style="--size:1.0em">
-            \[ \begin{aligned} G[X, Y, \omega] &= [X^\mathrm{T} \; Y^\mathrm{T}] \begin{bmatrix} A & B \\ B & A
-            \end{bmatrix}
-            \begin{bmatrix} X \\ Y \end{bmatrix} \\ &\hphantom{=}- \omega \left( [X^\mathrm{T} \; Y^\mathrm{T}]
-            \begin{bmatrix} X \\ -Y \end{bmatrix} - 1 \right) \end{aligned} \]</span>
-          <p class="fragment"> <span class="math-small" style="--size:1.0em"> \[ \begin{aligned} A_{ia,jb} &= F_{ab}
-              \delta_{ji} - F_{ij}
-              \delta_{ab} + (ia|jb) + (ia|f^\mathrm{xc}|jb)\\
-              &\hphantom{=} \htmlClass{fragment highlight-red}{+ (ia|f^\mathrm{naddxc}|jb) + (ia|f^\mathrm{naddkin}|jb)}
-              \\
-              B_{ia,jb} &= (ia|bj) + (ia|f^\mathrm{xc}|bj)\\
-              &\hphantom{=} \htmlClass{fragment highlight-red}{+ (ia|f^\mathrm{naddxc}|bj) +
-              (ia|f^\mathrm{naddkin}|bj)} \end{aligned} \] </span> </p>
-        </section>
-        <section>
-          <span class="math-small" style="--size:1.0em"> \[ \begin{aligned} A_{ia,jb} &= F_{ab} \delta_{ji} - F_{ij}
-            \delta_{ab} + (ia|jb) +
-            \htmlClass{data-id="equation1"}{\color{#ff2c2d}{(ia|f^\mathrm{combxc}|jb)}} \\
-            B_{ia,jb} &= (ia|bj) + \color{#ff2c2d}{(ia|f^\mathrm{combxc}|bj)}
-            \end{aligned} \] </span>
-        </section>
-        <section>
-          <span class="math-small" style="--size:0.9em">
-            \[ \begin{aligned} L[X,Y,\omega,C,Z,W] &= G[X,Y,\omega] + \sum_{ia} Z_{ia} \htmlClass{fragment
-            highlight-red}{F_{ia}} - \sum_{pq, p \leq q} W_{pq} \left(S_{pq} - \delta_{pq} \right) \end{aligned} \]
-          </span>
-          <span class="math-small fragment" data-fragment-index="1" style="--size:0.9em">
-            \[ \begin{aligned} L^\xi &= \sum_{\mu\nu} \left[ h_{\mu\nu}^\xi + v_{\mu\nu}^{\mathrm{xc}(\xi)} +
-            \htmlClass{fragment highlight-red}{v_{\mu\nu}^{\mathrm{emb}(\xi)}} \right] P_{\mu\nu} +
-            \sum_{\mu\nu\kappa\lambda} (\mu\nu|\kappa\lambda)^\xi \Gamma_{\mu\nu\kappa\lambda} - \sum_{\mu\nu}
-            S_{\mu\nu}^\xi W_{\mu\nu} \\
-            & \hphantom{=} + \sum_{\mu\nu\kappa\lambda} (X+Y)_{\mu\nu} (X+Y)_{\kappa\lambda}
-            \htmlData{fragment-index="2"}{\htmlClass{fragment
-            highlight-red}{f_{\mu\nu\kappa\lambda}^{\mathrm{combxc}(\xi)}}} \end{aligned} \]
-          </span>
-          <span class="fragment" data-fragment-index="5">
-            $ v_{\mu\nu}^{\mathrm{emb}(\xi)}$ contains combined xc terms (potential and kernel) and inter-subsystem
-            electrostatic interactions
-          </span>
-        </section>
-        <section data-auto-animate>
-          <h3>Embedded Geometry Optimizations</h3>
-        </section>
-        <section data-auto-animate>
-          <h3>Embedded Geometry Optimizations</h3>
-          <ul>
-            <li>additional distinction: geometrically "active" and "passive" </li>
-            <li class="fragment">uncoupled frozen-density embedding (FDEu) approximation for total system?</li>
-            <li class="fragment">otherwise: state-specific embedding possible</li>
-          </ul>
-        </section>
-      </section>
-      <section>
-        <h4>S$_1$ optimization with water geometry frozen (IRed, RFO) </h4>
-        <video controls loop data-src="media/emb.mp4" data-preview-video data-preview-fit="contain"></video>
-      </section>
-      <section>
-        <h4>S$_1$ optimization with water geometry allowed to relax (IRed, RFO) </h4>
-        <video id="emb_act-vid" controls loop preload="metadata" data-src="media/emb_act.mp4" data-preview-video
-          data-preview-fit="contain"></video>
-        <script>
-          const v = document.getElementById('emb_act-vid');
-          // 0.5 = half speed, 1 = normal, 2 = double speed
-          v.addEventListener('loadedmetadata', () => {
-            v.playbackRate = 0.25;
-          });
-        </script>
-      </section>
+				<section>
+					<h3>Subsystem TDDFT Gradients</h3>
+				</section>
+				<section>
+					<span class="math-small" style="--size:1.0em">
+						\[ \begin{aligned} G[X, Y, \omega] &= [X^\mathrm{T} \; Y^\mathrm{T}] \begin{bmatrix} A & B \\ B & A
+						\end{bmatrix}
+						\begin{bmatrix} X \\ Y \end{bmatrix} \\ &\hphantom{=}- \omega \left( [X^\mathrm{T} \; Y^\mathrm{T}]
+						\begin{bmatrix} X \\ -Y \end{bmatrix} - 1 \right) \end{aligned} \]</span>
+					<p class="fragment"> <span class="math-small" style="--size:1.0em"> \[ \begin{aligned} A_{ia,jb} &= F_{ab}
+							\delta_{ji} - F_{ij}
+							\delta_{ab} + (ia|jb) + (ia|f^\mathrm{xc}|jb)\\
+							&\hphantom{=} \htmlClass{fragment highlight-red}{+ (ia|f^\mathrm{naddxc}|jb) + (ia|f^\mathrm{naddkin}|jb)}
+							\\
+							B_{ia,jb} &= (ia|bj) + (ia|f^\mathrm{xc}|bj)\\
+							&\hphantom{=} \htmlClass{fragment highlight-red}{+ (ia|f^\mathrm{naddxc}|bj) +
+							(ia|f^\mathrm{naddkin}|bj)} \end{aligned} \] </span> </p>
+				</section>
+				<section>
+					<span class="math-small" style="--size:1.0em"> \[ \begin{aligned} A_{ia,jb} &= F_{ab} \delta_{ji} - F_{ij}
+						\delta_{ab} + (ia|jb) +
+						\htmlClass{data-id="equation1"}{\color{#ff2c2d}{(ia|f^\mathrm{combxc}|jb)}} \\
+						B_{ia,jb} &= (ia|bj) + \color{#ff2c2d}{(ia|f^\mathrm{combxc}|bj)}
+						\end{aligned} \] </span>
+				</section>
+				<section>
+					<span class="math-small" style="--size:0.9em">
+						\[ \begin{aligned} L[X,Y,\omega,C,Z,W] &= G[X,Y,\omega] + \sum_{ia} Z_{ia} \htmlClass{fragment
+						highlight-red}{F_{ia}} - \sum_{pq, p \leq q} W_{pq} \left(S_{pq} - \delta_{pq} \right) \end{aligned} \]
+					</span>
+					<span class="math-small fragment" data-fragment-index="1" style="--size:0.9em">
+						\[ \begin{aligned} L^\xi &= \sum_{\mu\nu} \left[ h_{\mu\nu}^\xi + v_{\mu\nu}^{\mathrm{xc}(\xi)} +
+						\htmlClass{fragment highlight-red}{v_{\mu\nu}^{\mathrm{emb}(\xi)}} \right] P_{\mu\nu} +
+						\sum_{\mu\nu\kappa\lambda} (\mu\nu|\kappa\lambda)^\xi \Gamma_{\mu\nu\kappa\lambda} - \sum_{\mu\nu}
+						S_{\mu\nu}^\xi W_{\mu\nu} \\
+						& \hphantom{=} + \sum_{\mu\nu\kappa\lambda} (X+Y)_{\mu\nu} (X+Y)_{\kappa\lambda}
+						\htmlData{fragment-index="2"}{\htmlClass{fragment
+						highlight-red}{f_{\mu\nu\kappa\lambda}^{\mathrm{combxc}(\xi)}}} \end{aligned} \]
+					</span>
+					<span class="fragment" data-fragment-index="5">
+						$ v_{\mu\nu}^{\mathrm{emb}(\xi)}$ contains combined xc terms (potential and kernel) and inter-subsystem
+						electrostatic interactions
+					</span>
+				</section>
+				<section data-auto-animate>
+					<h3>Embedded Geometry Optimizations</h3>
+				</section>
+				<section data-auto-animate>
+					<h3>Embedded Geometry Optimizations</h3>
+					<ul>
+						<li>additional distinction: geometrically "active" and "passive" </li>
+						<ul>
+							<!-- monospace style -->
+							<li class="fragment"><span style="font-family: monospace;">GeometryOptimizationTask</span>: <span style="font-family: monospace;">act</span> subsystems are optimized, <span style="font-family: monospace;">env</span> subsystems not</li>
+							<li class="fragment">all subsystems relaxed electronically</li>
+						</ul>
+						<li class="fragment">uncoupled frozen-density embedding (FDEu) approximation for total system?</li>
+						<li class="fragment">otherwise: state-specific embedding possible</li>
+					</ul>
+				</section>
+			</section> <!-- end of theoretical background -->
+			<section>
+				<h3>Nonadditive Dispersion</h3>
+				<span class="math-small" style="--size:0.8em">
+				 \[ \begin{aligned} E^\mathrm{disp,tot} &= \sum_I E^\mathrm{disp}_\mathrm{xcparam}[\{R_I\}] + \underbrace{E^\mathrm{disp}_\mathrm{naddxcparam}[\{R_\mathrm{tot}\}] - \sum_I E^\mathrm{disp}_\mathrm{naddxcparam}[\{R_I\}]  }_{E^\mathrm{disp}_\mathrm{nadd}} \end{aligned} \]
+				</span>
+				<span class="math-small fragment" style="--size:0.8em">
+				 \[ \begin{aligned} G^\mathrm{disp,tot}_\xi &= \sum_I G^\mathrm{disp,xcparam}_{I,\xi} + \underbrace{\htmlClass{fragment highlight-red}{G^\mathrm{disp,naddxcparam}_\xi} - \sum_I G^\mathrm{disp,naddxcparam}_{I,\xi}}_{G^\mathrm{disp,nadd}_\xi} \end{aligned} \]
+				</span>
+				<ul>
+					<li class="fragment" data-id="3">gradient contribution used to be incorrect in <span style="font-variant:small-caps">Serenity</span> </li>
+				</ul>
+			</section>
+			<section>
+				<h3>Computational Details</h3>
+				def2-TZVP, default grid settings (2/4/4), PBE0/PBE/revAPBEK, D3(BJ), TDA, IRed, RFO
+			</section>
+			<section>
+				<h6>Parallelization</h6>
+				<img src="media/bench_input.png" data-preview-image>
+				<!-- make the next sentence smaller -->
+				<p style="font-size:0.4em; color:rgb(58, 128, 0)">Computational Details: def2-TZVP, default grid settings (2/4/4), PBE0/PBE/revAPBEK, D3(BJ), TDA, IRed, RFO</p>
+				 
+			</section>
+<!-- 
+			<section>
+				<h4>S$_1$ optimization with water geometry frozen (IRed, RFO) </h4>
+				<video controls loop data-src="media/emb.mp4" data-preview-video data-preview-fit="contain"></video>
+			</section> -->
+			<section>
+				<h4>S$_1$ optimization with water geometry allowed to relax (IRed, RFO) </h4>
+				<video id="emb_act-vid" controls loop preload="metadata" data-src="media/emb_act.mp4" data-preview-video
+					data-preview-fit="contain"></video>
+				<script>
+					const v = document.getElementById('emb_act-vid');
+					// 0.5 = half speed, 1 = normal, 2 = double speed
+					v.addEventListener('loadedmetadata', () => {
+						v.playbackRate = 0.25;
+					});
+				</script>
+			</section>
+			<section>
+				<h3>Next Steps</h3>
+				<ul class="fragmented-lists">
+					<li>calculate numerical Hessians</li>
+					<li>compare structures with supersystem and isolated structures</li>
+					<li>compute Stokes shifts</li>
+				</ul>
+			</section>
 
-    </div>
-  </div>
+		</div>
+	</div>
 
-  <script src="dist/reveal.js"></script>
-  <script src="plugin/notes/notes.js"></script>
-  <script src="plugin/markdown/markdown.js"></script>
-  <script src="plugin/highlight/highlight.js"></script>
-  <script src="plugin/math/math.js"></script>
-  <script>
-    // More info about initialization & config:
-    // - https://revealjs.com/initialization/
-    // - https://revealjs.com/config/
-    Reveal.initialize({
-      hash: true,
-      slideNumber: true,
-      katex: {
-        local: 'node_modules/katex',
-        trust: true,
-      },
-      autoAnimateEasing: 'cubic-bezier(.2,.8,.2,1)',
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+	<script src="plugin/math/math.js"></script>
+	<script>
+		// More info about initialization & config:
+		// - https://revealjs.com/initialization/
+		// - https://revealjs.com/config/
+		Reveal.initialize({
+			hash: true,
+			slideNumber: true,
+			katex: {
+				// local: 'node_modules/katex',
+				trust: true,
+			},
+			autoAnimateEasing: 'cubic-bezier(.2,.8,.2,1)',
 
-      // Learn about plugins: https://revealjs.com/plugins/
-      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
-    });
-  </script>
-  <script>
-    Reveal.addEventListener("ready", function addFragmentToLists() {
-      for (const listItem of document.querySelectorAll(".fragmented-lists li")) {
-        listItem.classList.add("fragment");
-      }
-    });</script>
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
+		});
+	</script>
+	<script>
+		Reveal.addEventListener("ready", function addFragmentToLists() {
+			for (const listItem of document.querySelectorAll(".fragmented-lists li")) {
+				listItem.classList.add("fragment");
+			}
+		});</script>
 </body>
 
 </html>
