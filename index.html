@@ -245,9 +245,8 @@
         <h6>Parallelization</h6>
         <img src="media/bench_input.png" data-preview-image>
         <!-- make the next sentence smaller -->
-        <p style="font-size:0.4em; color:rgb(58, 128, 0)">Computational Details: def2-TZVP, default grid settings
-          (2/4/4), PBE0/PBE/revAPBEK, D3(BJ), TDA, IRed, RFO</p>
-
+        <p style="font-size:0.4em; color:darkgreen">Computational Details: def2-TZVP, default grid settings
+          (2/4/4), PBE0/PBE/revAPBEK, D3(BJ), TDA, 4 excitations, 1 gradient</p>
       </section>
 
       <section>
@@ -300,8 +299,8 @@
 				<video controls loop data-src="media/emb.mp4" data-preview-video data-preview-fit="contain"></video>
 			</section> -->
       <section>
-        <h4>S$_1$ optimization with water geometry allowed to relax (IRed, RFO) </h4>
-        <video id="emb_act-vid" controls loop preload="metadata" data-src="media/emb_act.mp4" data-preview-video
+        <h4>S$_1$ supersystem optimization </h4>
+        <video id="emb_act-vid" controls loop preload="metadata" data-src="media/super.mp4" data-preview-video
           data-preview-fit="contain"></video>
         <script>
           const v = document.getElementById('emb_act-vid');
@@ -310,6 +309,27 @@
             v.playbackRate = 0.25;
           });
         </script>
+      </section>
+      <section>
+        <h4>S$_1$ embedded optimization (water frozen)</h4>
+        <video id="emb_act-vid" controls preload="metadata" data-src="media/emb.mp4" data-preview-video
+          data-preview-fit="contain"></video>
+        <script>
+          const v = document.getElementById('emb_act-vid');
+          // 0.5 = half speed, 1 = normal, 2 = double speed
+          v.addEventListener('loadedmetadata', () => {
+            v.playbackRate = 0.01;
+          });
+        </script>
+      </section>
+      <section>
+        <h4>Comparison</h4>
+        <ul class="fragmented-lists">
+          <li>RMSD of optimized coordinates vs. supersystem (after Kabsch algorithm): 0.05 Å</li>
+          <li>excitation energy: 3.845 eV  (embedded) vs 3.801 eV (supersystem)</li>
+          <li>electronic character retained in optimization</li><br>
+          <li>BFGS (cart) 19 steps, BFGS (ired) 9 steps, RFO (ired) 5 steps (energy diff: &lt; 1e-5 Ha, geom diff: &lt; 1e-3 Å per coordinate)</li>
+        </ul>
       </section>
       <section>
         <h3>Next Steps</h3>
